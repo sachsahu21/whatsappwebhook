@@ -1,0 +1,6 @@
+import requests
+
+url = "http://127.0.0.1:5001/w"
+
+r = requests.post(url)
+print(r.content)
