@@ -15,8 +15,12 @@ def send_msg(sender_id,sender_name,message_text):
    
     message = 'Hi '+sender_name+'\n'+'\n'+'Thanks for messaging : '+message_text
     # print(message)
+    url = "https://graph.facebook.com/v17.0/108427882323095/messages"
+    access_token = 'EAAN6DGKldRABO6rRYbf9ih6Q9d0HEQ1tZAcgZC6uT2eAsb9BiHxyksfz7NfeMGKFQ7P2CAOY9oOPEDulEHqf7TUi0wFylJaagI9oxfLyvTGKsuwZALZCgT5swGB8bGwQUe3ggTWYEoUOzH3qtXZC2CqGl5VRlMvhThEFEaREjzysvrRfZCVoBLYt2xIVZCRTGXSuhwOy1SktlZB50Hp7Q5ay'
+
     headers = {
-        'Authorization': 'Bearer EAAN6DGKldRABO1wXfCM4sVRGNLdjARTlD5Xa6czNAGVgkBZAk67YY0Aj4tmYlMjsnZAZCPN6R8Spyh09z8KZCmcAJZAenfZCh1Kq7uP5m9b9hSuqJUAgiGBGT9fLLcXcISKFLeq3cPGLDam3uCGCKzUfC52Aqaple1kqCKdrXYqZAn2zpQaVZBC5bpnuBHRYUiAkU3EsTH0sKOvalzX1ZCJVY',
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
     json_data = {
         'messaging_product': 'whatsapp',
@@ -26,7 +30,8 @@ def send_msg(sender_id,sender_name,message_text):
             "body": message
         }
     }
-    response = requests.post('https://graph.facebook.com/v17.0/108427882323095/messages', headers=headers, json=json_data)
+
+    response = requests.post(url, headers=headers, json=json_data)
     print('send_msg response text',response.text)
  
 @app.route('/receive_msg', methods=['POST','GET'])
@@ -44,16 +49,17 @@ def webhook():
     elif request.method == 'POST':
         raw_json = request.get_json()
         try:
-            if raw_json['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] : 
-                data = raw_json['entry'][0]['changes'][0]['value']
-                sender_id = data['messages'][0]['from'] 
-                sender_name = data['contacts'][0]['profile']['name']
-                message_text = data['messages'][0]['text']['body']
-                # print(sender_id,sender_name,message_text)
-                send_msg(sender_id,sender_name,message_text)
+            # if raw_json['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] : 
+            data = raw_json['entry'][0]['changes'][0]['value']
+            sender_id = data['messages'][0]['from'] 
+            sender_name = data['contacts'][0]['profile']['name']
+            message_text = data['messages'][0]['text']['body']
+            # print(sender_id,sender_name,message_text)
+            send_msg(sender_id,sender_name,message_text)
+            return "Worked"
             
         except:
-            print('except')
+            # print('except')
             pass
 
     return '200 OK HTTPS.'
