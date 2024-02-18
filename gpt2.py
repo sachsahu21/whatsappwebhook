@@ -39,7 +39,7 @@ def generate_answer(question):
         # Handle errors
         print("Error:", e)
 
-    return answer
+    return answerx  
 
 # ------------
 
